@@ -1,0 +1,152 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+//using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using System.Drawing;
+using System.Windows.Forms;
+
+namespace e_media0_2
+{
+    /// <summary>
+    /// Logika interakcji dla klasy MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow : Window
+    {
+        string file = string.Empty;
+        public MainWindow()
+        {
+            InitializeComponent();
+        }
+
+        private void BtnFileOpen_Click(object sender, RoutedEventArgs e)
+        {
+            var fileDialog = new System.Windows.Forms.OpenFileDialog();
+            var result = fileDialog.ShowDialog();
+            switch (result)
+            {
+                case System.Windows.Forms.DialogResult.OK:
+                    file = fileDialog.FileName;
+                    TxtFile.Content = file;
+                    MainFunction(file);
+                    break;
+                case System.Windows.Forms.DialogResult.Cancel:
+                default:
+                    TxtFile.Content = null;
+                    break;
+            }
+        }
+
+        
+        private void BtnViewImg_Click(object sender, RoutedEventArgs e)
+        {
+            pictureWindow pw = new pictureWindow(file);
+            pw.DataContext = file;
+            try
+            {
+                pw.Show();
+            }
+            catch (System.InvalidOperationException)
+            {
+                pw.Close();
+            }
+        }
+
+        private void BtnFFT_Click(object sender, RoutedEventArgs e)
+        {
+            fftWindow ft = new fftWindow(file);
+            ft.DataContext = file;
+            try
+            {
+                ft.Show();
+            }
+            catch (System.InvalidOperationException)
+            {
+                ft.Close();
+            }
+        }
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+        private void MainFunction(string name)
+        {
+            //MainWindow wndow = new MainWindow();
+            try
+            {
+                Image myBmp = LoadImg(name);
+                byte[] myFile = ConvertToByte(myBmp);
+                DisplayData(myFile);
+            }
+            catch(OutOfMemoryException)
+            {
+                System.Windows.MessageBox.Show("Pick BMP u fool", "Error");
+            }
+
+          
+            
+        }
+
+        private void DisplayData(byte[] myFile)
+        {
+            if (myFile[0] == 0x42 & myFile[1] == 0x4D)
+            {
+                labelBTMhead.Content = "Bitmap header file:";
+                labelType.Content = "Type: BMP";
+                labelSize.Content = "Size in bytes: " + ReadData(myFile, 2, 6);
+                labelOffset.Content = "Starting point (byte): " + ReadData(myFile, 10, 13);
+
+                labelDIB.Content = "DIB header:";
+                labelDIBsize.Content = "Header size: " + ReadData(myFile, 14, 17);
+                labelWidth.Content = "Width: " + ReadData(myFile, 18, 21);
+                labelHeight.Content = "Height: " + ReadData(myFile, 22, 25);
+                labelColorPlanes.Content = "Color planes: " + ReadData(myFile, 26, 27);
+                labelBtsPerPxl.Content = "Bytes per pixel: " + ReadData(myFile, 28, 29);
+                labelCompr.Content = "Compression method (0 is none): " + ReadData(myFile, 30, 33);
+                labelImSize.Content = "Img size (0 if BI_RGB bitmap): " + ReadData(myFile, 34, 37);
+                labelPxlH.Content = "Pixel per metre (horizontal): " + ReadData(myFile, 38, 41);
+                labelPxlV.Content = "Pixel per metre (vertical): " + ReadData(myFile, 42, 45);
+                labelColPal.Content = "Colors in the color palette: " + ReadData(myFile, 46, 49);
+                labelImpCol.Content = "Important colors (if 0 none or all equal): " + ReadData(myFile, 50, 53);
+            }
+            else
+                System.Windows.MessageBox.Show("Pick BMP u fool");
+        }
+
+        private static Int32 ReadData(byte[] myFile, int begin, int end)
+        {
+            string size = "";
+            for (int i = begin; i < end; i++)
+            {
+                if (myFile[i] != 0)
+                {
+                    size += myFile[i].ToString("X");
+                }
+            }
+            if (size == "")
+                return 0;
+            return Convert.ToInt32(size, 16);
+        }
+
+        private static Image LoadImg(string name)
+        {
+            Image myBmp = Image.FromFile(name);
+
+            return myBmp;
+        }
+
+        private static byte[] ConvertToByte(Image myBmp)
+        {
+            ImageConverter converter = new ImageConverter();
+
+            return (byte[])converter.ConvertTo(myBmp, typeof(byte[]));
+        }
+    }
+}
