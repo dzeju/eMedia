@@ -15,6 +15,7 @@ using AForge.Imaging;
 using System.Drawing;
 using System.IO;
 using System.Drawing.Imaging;
+using System.Drawing.Drawing2D;
 
 namespace e_media0_2
 {
@@ -36,19 +37,26 @@ namespace e_media0_2
             else
             {   
                 Bitmap myBmp = new Bitmap(file);
+
+                imgFFT.Height = myBmp.Height;
+                imgFFT.Width = myBmp.Width;
+
+                myBmp = ResizeImage(myBmp, 1024, 1024);
                 Bitmap grayScaleBP = ToGrayscale(myBmp);
                 System.Drawing.Rectangle cloneRect = new System.Drawing.Rectangle(0, 0, grayScaleBP.Width, grayScaleBP.Height);
                 Bitmap clone = myBmp.Clone(cloneRect, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
                 
                 ComplexImage complexImage = ComplexImage.FromBitmap(clone);
-                myBmp.Dispose();
-
+                
                 complexImage.ForwardFourierTransform();
                 Bitmap fourierImage = complexImage.ToBitmap();
 
-                imgFFT.Height = fourierImage.Height*2;
-                imgFFT.Width = fourierImage.Width*2;
                 imgFFT.Source = BitmapToImageSource(fourierImage);
+
+                grayScaleBP.Dispose();
+                clone.Dispose();
+                myBmp.Dispose();
+                fourierImage.Dispose();
             }
         }
         BitmapImage BitmapToImageSource(Bitmap bitmap)
@@ -112,6 +120,38 @@ namespace e_media0_2
             grayscaleBitmap.UnlockBits(bitmapData);
 
             return grayscaleBitmap;
+        }
+
+        /// <summary>
+        /// Resize the image to the specified width and height.
+        /// </summary>
+        /// <param name="image">The image to resize.</param>
+        /// <param name="width">The width to resize to.</param>
+        /// <param name="height">The height to resize to.</param>
+        /// <returns>The resized image.</returns>
+        public static Bitmap ResizeImage(Bitmap image, int width, int height)
+        {
+            var destRect = new System.Drawing.Rectangle(0, 0, width, height);
+            var destImage = new Bitmap(width, height);
+
+            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
+
+            using (var graphics = Graphics.FromImage(destImage))
+            {
+                graphics.CompositingMode = CompositingMode.SourceCopy;
+                graphics.CompositingQuality = CompositingQuality.HighQuality;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.SmoothingMode = SmoothingMode.HighQuality;
+                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+                using (var wrapMode = new ImageAttributes())
+                {
+                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
+                }
+            }
+
+            return destImage;
         }
     }
 }
