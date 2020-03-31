@@ -36,8 +36,9 @@ namespace e_media0_2
             else
             {   
                 Bitmap myBmp = new Bitmap(file);
-                Bitmap grayScaleBP = MakeGrayscale3(myBmp);
-                Bitmap clone = new Bitmap(myBmp.Width+4, myBmp.Height+4, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
+                Bitmap grayScaleBP = ToGrayscale(myBmp);
+                System.Drawing.Rectangle cloneRect = new System.Drawing.Rectangle(0, 0, grayScaleBP.Width, grayScaleBP.Height);
+                Bitmap clone = myBmp.Clone(cloneRect, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
                 
                 ComplexImage complexImage = ComplexImage.FromBitmap(clone);
                 myBmp.Dispose();
@@ -45,6 +46,8 @@ namespace e_media0_2
                 complexImage.ForwardFourierTransform();
                 Bitmap fourierImage = complexImage.ToBitmap();
 
+                imgFFT.Height = fourierImage.Height*2;
+                imgFFT.Width = fourierImage.Width*2;
                 imgFFT.Source = BitmapToImageSource(fourierImage);
             }
         }
@@ -62,6 +65,53 @@ namespace e_media0_2
 
                 return bitmapimage;
             }
+        }
+
+        public static unsafe Bitmap ToGrayscale(Bitmap colorBitmap)
+        {
+            int Width = colorBitmap.Width;
+            int Height = colorBitmap.Height;
+
+            Bitmap grayscaleBitmap = new Bitmap(Width, Height, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
+
+            grayscaleBitmap.SetResolution(colorBitmap.HorizontalResolution,
+                                 colorBitmap.VerticalResolution);
+
+            ///////////////////////////////////////
+            // Set grayscale palette
+            ///////////////////////////////////////
+            ColorPalette colorPalette = grayscaleBitmap.Palette;
+            for (int i = 0; i < colorPalette.Entries.Length; i++)
+            {
+                colorPalette.Entries[i] = System.Drawing.Color.FromArgb(i, i, i);
+            }
+            grayscaleBitmap.Palette = colorPalette;
+            ///////////////////////////////////////
+            // Set grayscale palette
+            ///////////////////////////////////////
+            BitmapData bitmapData = grayscaleBitmap.LockBits(
+                new System.Drawing.Rectangle(System.Drawing.Point.Empty, grayscaleBitmap.Size),
+                ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
+
+            Byte* pPixel = (Byte*)bitmapData.Scan0;
+
+            for (int y = 0; y < Height; y++)
+            {
+                for (int x = 0; x < Width; x++)
+                {
+                    System.Drawing.Color clr = colorBitmap.GetPixel(x, y);
+
+                    Byte byPixel = (byte)((30 * clr.R + 59 * clr.G + 11 * clr.B) / 100);
+
+                    pPixel[x] = byPixel;
+                }
+
+                pPixel += bitmapData.Stride;
+            }
+
+            grayscaleBitmap.UnlockBits(bitmapData);
+
+            return grayscaleBitmap;
         }
 
         public static Bitmap MakeGrayscale3(Bitmap original)
