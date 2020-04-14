@@ -188,19 +188,8 @@ namespace e_media0_2
             return (byte[])converter.ConvertTo(myBmp, typeof(byte[]));
         }
 
-        private static Image ConvertToImage(byte[] myFile)
+        private static void SaveTheFile(byte[] myFile) 
         {
-            ImageConverter converter = new ImageConverter();
-
-            return (Bitmap)converter.ConvertFrom(myFile);
-        }
-
-        private void Anon(byte[] myFile)
-        {
-            WriteData(myFile, 38, 53, 0);
-            DisplayData(myFile);
-            Image tmp = ConvertToImage(myFile);
-
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
 
             saveFileDialog1.Filter = "All files (*.*)|*.*|BMP files (*.bmp)|*.bmp";
@@ -211,8 +200,16 @@ namespace e_media0_2
             {
                 System.IO.File.WriteAllBytes(saveFileDialog1.FileName, myFile);
             }
-            
+        }
 
+        private void Anon(byte[] myFile)
+        {
+            WriteData(myFile, 38, 53, 0);
+            DisplayData(myFile);
+            if(System.Windows.MessageBox.Show("Done. Data updated. Save the file?", "Save", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                SaveTheFile(myFile);
+            }
         }
     }
 }
