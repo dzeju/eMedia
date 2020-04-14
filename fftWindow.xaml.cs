@@ -35,28 +35,36 @@ namespace e_media0_2
                 this.Close();
             }
             else
-            {   
-                Bitmap myBmp = new Bitmap(file);
+            {
+                try
+                {
+                    Bitmap myBmp = new Bitmap(file);
 
-                imgFFT.Height = myBmp.Height;
-                imgFFT.Width = myBmp.Width;
+                    imgFFT.Height = myBmp.Height;
+                    imgFFT.Width = myBmp.Width;
 
-                myBmp = ResizeImage(myBmp, 1024, 1024);
-                Bitmap grayScaleBP = ToGrayscale(myBmp);
-                System.Drawing.Rectangle cloneRect = new System.Drawing.Rectangle(0, 0, grayScaleBP.Width, grayScaleBP.Height);
-                Bitmap clone = myBmp.Clone(cloneRect, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
-                
-                ComplexImage complexImage = ComplexImage.FromBitmap(clone);
-                
-                complexImage.ForwardFourierTransform();
-                Bitmap fourierImage = complexImage.ToBitmap();
+                    myBmp = ResizeImage(myBmp, 1024, 1024);
+                    Bitmap grayScaleBP = ToGrayscale(myBmp);
+                    System.Drawing.Rectangle cloneRect = new System.Drawing.Rectangle(0, 0, grayScaleBP.Width, grayScaleBP.Height);
+                    Bitmap clone = myBmp.Clone(cloneRect, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
 
-                imgFFT.Source = BitmapToImageSource(fourierImage);
+                    ComplexImage complexImage = ComplexImage.FromBitmap(clone);
 
-                grayScaleBP.Dispose();
-                clone.Dispose();
-                myBmp.Dispose();
-                fourierImage.Dispose();
+                    complexImage.ForwardFourierTransform();
+                    Bitmap fourierImage = complexImage.ToBitmap();
+
+                    imgFFT.Source = BitmapToImageSource(fourierImage);
+
+                    grayScaleBP.Dispose();
+                    clone.Dispose();
+                    myBmp.Dispose();
+                    fourierImage.Dispose();
+                }
+                catch
+                {
+                    MessageBox.Show("Wrong file, nerd");
+                    this.Close();
+                }
             }
         }
         BitmapImage BitmapToImageSource(Bitmap bitmap)

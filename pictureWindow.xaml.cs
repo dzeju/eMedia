@@ -32,11 +32,19 @@ namespace e_media0_2
             }
             else
             {
-                Bitmap myBmp = new Bitmap(file);
-                imgDisp.Source = BitmapToImageSource(myBmp);
-                imgDisp.Height = myBmp.Height;
-                imgDisp.Width = myBmp.Width;
-                myBmp.Dispose();
+                try
+                {
+                    Bitmap myBmp = new Bitmap(file);
+                    imgDisp.Source = BitmapToImageSource(myBmp);
+                    imgDisp.Height = myBmp.Height;
+                    imgDisp.Width = myBmp.Width;
+                    myBmp.Dispose();
+                }
+                catch
+                {
+                    MessageBox.Show("Wrong file, nerd");
+                    this.Close();
+                }
             }
         }
 
