@@ -48,6 +48,11 @@ namespace e_media0_2
             }
         }
 
+        /// <summary>
+        /// Converts bitmap to image source for WPF to display
+        /// </summary>
+        /// <param name="bitmap">Bitmap to convert.</param>
+        /// <returns>Bitmap image for source.</returns>
         BitmapImage BitmapToImageSource(Bitmap bitmap)
         {
             using (MemoryStream memory = new MemoryStream())

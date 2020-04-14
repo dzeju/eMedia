@@ -85,15 +85,16 @@ namespace e_media0_2
                 byte[] myFile = ConvertToByte(myBmp);
                 DisplayData(myFile);
             }
-            catch(OutOfMemoryException)
+            catch (OutOfMemoryException)
             {
                 System.Windows.MessageBox.Show("Pick BMP u fool", "Error");
             }
-
-          
-            
         }
 
+        /// <summary>
+        /// Display data from image
+        /// </summary>
+        /// <param name="myFile">array with image data</param>
         private void DisplayData(byte[] myFile)
         {
             if (myFile[0] == 0x42 & myFile[1] == 0x4D)
@@ -120,21 +121,33 @@ namespace e_media0_2
                 System.Windows.MessageBox.Show("Pick BMP u fool");
         }
 
+        /// <summary>
+        /// Reads piece of data from array and converts to decimal
+        /// </summary>
+        /// <param name="myFile">array of data</param>
+        /// <param name="begin">start point for reading</param>
+        /// <param name="end">end point</param>
+        /// <returns>piece of data from image</returns>
         private static Int32 ReadData(byte[] myFile, int begin, int end)
         {
-            string size = "";
+            string data = "";
             for (int i = begin; i < end; i++)
             {
                 if (myFile[i] != 0)
                 {
-                    size += myFile[i].ToString("X");
+                    data += myFile[i].ToString("X");
                 }
             }
-            if (size == "")
+            if (data == "")
                 return 0;
-            return Convert.ToInt32(size, 16);
+            return Convert.ToInt32(data, 16);
         }
 
+        /// <summary>
+        /// Loads an image (idk if necessary)
+        /// </summary>
+        /// <param name="name">name of the file</param>
+        /// <returns>image</returns>
         private static Image LoadImg(string name)
         {
             Image myBmp = Image.FromFile(name);
@@ -142,6 +155,11 @@ namespace e_media0_2
             return myBmp;
         }
 
+        /// <summary>
+        /// Converts image to byte array
+        /// </summary>
+        /// <param name="myBmp">Image to convert</param>
+        /// <returns>byte array with image contents</returns>
         private static byte[] ConvertToByte(Image myBmp)
         {
             ImageConverter converter = new ImageConverter();

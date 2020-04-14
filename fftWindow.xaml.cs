@@ -43,20 +43,23 @@ namespace e_media0_2
                     imgFFT.Height = myBmp.Height;
                     imgFFT.Width = myBmp.Width;
 
-                    myBmp = ResizeImage(myBmp, 1024, 1024);
-                    Bitmap grayScaleBP = ToGrayscale(myBmp);
-                    System.Drawing.Rectangle cloneRect = new System.Drawing.Rectangle(0, 0, grayScaleBP.Width, grayScaleBP.Height);
-                    Bitmap clone = myBmp.Clone(cloneRect, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
+                    myBmp = ResizeImage(myBmp, 1024, 1024); //rozmiar do potegi 2
+                    Bitmap grayScaleBP = ToGrayscale(myBmp); // do skali szarosci oraz 8bpp
 
-                    ComplexImage complexImage = ComplexImage.FromBitmap(clone);
+                        //tworzenie klona bitmapy z 8bpp
+                        //System.Drawing.Rectangle cloneRect = new System.Drawing.Rectangle(0, 0, grayScaleBP.Width, grayScaleBP.Height);
+                        //Bitmap clone = myBmp.Clone(cloneRect, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
 
-                    complexImage.ForwardFourierTransform();
-                    Bitmap fourierImage = complexImage.ToBitmap();
+                    ComplexImage complexImage = ComplexImage.FromBitmap(grayScaleBP); //obraz zespolony(?)
+
+                    complexImage.ForwardFourierTransform(); //przeprowadzenie forward fourier transform
+                    Bitmap fourierImage = complexImage.ToBitmap(); //konwersja obrazu zesp do bitmapy
+
 
                     imgFFT.Source = BitmapToImageSource(fourierImage);
 
                     grayScaleBP.Dispose();
-                    clone.Dispose();
+                        //clone.Dispose();
                     myBmp.Dispose();
                     fourierImage.Dispose();
                 }
@@ -67,6 +70,12 @@ namespace e_media0_2
                 }
             }
         }
+
+        /// <summary>
+        /// Converts bitmap to image source for WPF to display
+        /// </summary>
+        /// <param name="bitmap">Bitmap to convert.</param>
+        /// <returns>Bitmap image for source.</returns>
         BitmapImage BitmapToImageSource(Bitmap bitmap)
         {
             using (MemoryStream memory = new MemoryStream())
@@ -83,6 +92,11 @@ namespace e_media0_2
             }
         }
 
+        /// <summary>
+        /// Makes bitmap gray scale and 8bpp
+        /// </summary>
+        /// <param name="colorBitmap">Color bitmap to transform</param>
+        /// <returns>Grayscale bitmap 8bpp</returns>
         public static unsafe Bitmap ToGrayscale(Bitmap colorBitmap)
         {
             int Width = colorBitmap.Width;
@@ -90,21 +104,17 @@ namespace e_media0_2
 
             Bitmap grayscaleBitmap = new Bitmap(Width, Height, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
 
-            grayscaleBitmap.SetResolution(colorBitmap.HorizontalResolution,
-                                 colorBitmap.VerticalResolution);
+            grayscaleBitmap.SetResolution(colorBitmap.HorizontalResolution, colorBitmap.VerticalResolution);
 
-            ///////////////////////////////////////
             // Set grayscale palette
-            ///////////////////////////////////////
             ColorPalette colorPalette = grayscaleBitmap.Palette;
             for (int i = 0; i < colorPalette.Entries.Length; i++)
             {
                 colorPalette.Entries[i] = System.Drawing.Color.FromArgb(i, i, i);
             }
             grayscaleBitmap.Palette = colorPalette;
-            ///////////////////////////////////////
+
             // Set grayscale palette
-            ///////////////////////////////////////
             BitmapData bitmapData = grayscaleBitmap.LockBits(
                 new System.Drawing.Rectangle(System.Drawing.Point.Empty, grayscaleBitmap.Size),
                 ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
