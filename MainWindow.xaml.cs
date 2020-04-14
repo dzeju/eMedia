@@ -23,6 +23,7 @@ namespace e_media0_2
     public partial class MainWindow : Window
     {
         string file = string.Empty;
+        byte[] myFile = null;
         public MainWindow()
         {
             InitializeComponent();
@@ -30,7 +31,7 @@ namespace e_media0_2
 
         private void BtnFileOpen_Click(object sender, RoutedEventArgs e)
         {
-            var fileDialog = new System.Windows.Forms.OpenFileDialog();
+            var fileDialog = new OpenFileDialog();
             var result = fileDialog.ShowDialog();
             switch (result)
             {
@@ -75,6 +76,18 @@ namespace e_media0_2
             }
         }
 
+        private void BtnAnonImg_Click(object sender, RoutedEventArgs e)
+        {
+            if (myFile == null)
+            {
+                System.Windows.MessageBox.Show("No file here", "Error");
+            }
+            else
+            {
+                Anon(myFile);
+            }
+        }
+
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////
         private void MainFunction(string name)
         {
@@ -82,7 +95,7 @@ namespace e_media0_2
             try
             {
                 Image myBmp = LoadImg(name);
-                byte[] myFile = ConvertToByte(myBmp);
+                myFile = ConvertToByte(myBmp);
                 DisplayData(myFile);
             }
             catch (OutOfMemoryException)
@@ -143,6 +156,14 @@ namespace e_media0_2
             return Convert.ToInt32(data, 16);
         }
 
+        private static void WriteData(byte[] myFile, int begin, int end, byte data)
+        {
+            for (int i = begin; i < end; i++)
+            {
+                myFile[i] = data;
+            }
+        }
+
         /// <summary>
         /// Loads an image (idk if necessary)
         /// </summary>
@@ -165,6 +186,33 @@ namespace e_media0_2
             ImageConverter converter = new ImageConverter();
 
             return (byte[])converter.ConvertTo(myBmp, typeof(byte[]));
+        }
+
+        private static Image ConvertToImage(byte[] myFile)
+        {
+            ImageConverter converter = new ImageConverter();
+
+            return (Bitmap)converter.ConvertFrom(myFile);
+        }
+
+        private void Anon(byte[] myFile)
+        {
+            WriteData(myFile, 38, 53, 0);
+            DisplayData(myFile);
+            Image tmp = ConvertToImage(myFile);
+
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+
+            saveFileDialog1.Filter = "All files (*.*)|*.*|BMP files (*.bmp)|*.bmp";
+            saveFileDialog1.FilterIndex = 2;
+            saveFileDialog1.RestoreDirectory = true;
+
+            if (saveFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                System.IO.File.WriteAllBytes(saveFileDialog1.FileName, myFile);
+            }
+            
+
         }
     }
 }
