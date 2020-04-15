@@ -7,7 +7,18 @@
         mc:Ignorable="d"
         Title="FFT" Height="400" Width="600" SizeToContent="WidthAndHeight" Background="#FF3C3C3C" BorderBrush="#FF3C3C3C" Foreground="#FF3C3C3C" OpacityMask="#FF3C3C3C">
     <Grid>
-        <Image x:Name="imgFFT" HorizontalAlignment="Center" Height="auto" VerticalAlignment="Center" Width="auto"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Image Grid.Row="1" Grid.Column ="0" x:Name="imgFFT" HorizontalAlignment="Left" Height="auto" VerticalAlignment="Center" Width="auto"/>
+        <Image Grid.Row="1" Grid.Column ="1" x:Name="imgFFT2" HorizontalAlignment="Right" Height="auto" VerticalAlignment="Center" Width="auto"/>
+        <Label Grid.Row="0" Grid.Column ="0" Content="Module"  HorizontalAlignment="Left" Margin="10,0,-125,0" VerticalAlignment="Top" Width="auto" Foreground="#FFBFBFBF"/>
+        <Label Grid.Row="0" Grid.Column ="1" Content="Frequency"  HorizontalAlignment="Left" Margin="10,0,-125,0" VerticalAlignment="Top" Width="auto" Foreground="#FFBFBFBF"/>
 
     </Grid>
 </Window>

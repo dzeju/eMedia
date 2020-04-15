@@ -16,6 +16,8 @@ using System.Drawing;
 using System.IO;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
+using AForge.Imaging.ComplexFilters;
+using AForge;
 
 namespace e_media0_2
 {
@@ -42,26 +44,35 @@ namespace e_media0_2
 
                     imgFFT.Height = myBmp.Height;
                     imgFFT.Width = myBmp.Width;
+                    imgFFT2.Height = myBmp.Height;
+                    imgFFT2.Width = myBmp.Width;
+                    this.Width = 2 * myBmp.Width;
+                    
 
-                    myBmp = ResizeImage(myBmp, 1024, 1024); //rozmiar do potegi 2
-                    Bitmap grayScaleBP = ToGrayscale(myBmp); // do skali szarosci oraz 8bpp
+                    Bitmap tmp = ResizeImage(myBmp, 1024, 1024); //rozmiar do potegi 2
+                    Bitmap grayScaleBP = ToGrayscale(tmp); // do skali szarosci oraz 8bpp
 
-                        //tworzenie klona bitmapy z 8bpp
-                        //System.Drawing.Rectangle cloneRect = new System.Drawing.Rectangle(0, 0, grayScaleBP.Width, grayScaleBP.Height);
-                        //Bitmap clone = myBmp.Clone(cloneRect, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
-
-                    ComplexImage complexImage = ComplexImage.FromBitmap(grayScaleBP); //obraz zespolony(?)
+                    ComplexImage complexImage = ComplexImage.FromBitmap(grayScaleBP); //obraz zespolony
 
                     complexImage.ForwardFourierTransform(); //przeprowadzenie forward fourier transform
-                    Bitmap fourierImage = complexImage.ToBitmap(); //konwersja obrazu zesp do bitmapy
+                    Bitmap fourierImage1 = complexImage.ToBitmap();
+                    fourierImage1 = ResizeImage(fourierImage1, myBmp.Width, myBmp.Height);
+                    imgFFT.Source = BitmapToImageSource(fourierImage1);
 
+                    FrequencyFilter filter = new FrequencyFilter(new IntRange(20, 128));
+                    filter.Apply(complexImage);
+                    complexImage.BackwardFourierTransform();
+                    Bitmap fourierImage2 = complexImage.ToBitmap(); //konwersja obrazu zesp do bitmapy
+                    
+                    fourierImage2 = ResizeImage(fourierImage2, myBmp.Width, myBmp.Height);
+                    imgFFT2.Source = BitmapToImageSource(fourierImage2);
 
-                    imgFFT.Source = BitmapToImageSource(fourierImage);
-
+                    
                     grayScaleBP.Dispose();
                         //clone.Dispose();
                     myBmp.Dispose();
-                    fourierImage.Dispose();
+                    fourierImage1.Dispose();
+                    fourierImage2.Dispose();
                 }
                 catch
                 {
