@@ -42,12 +42,22 @@ namespace e_media0_2
                 {
                     Bitmap myBmp = new Bitmap(file);
 
-                    imgFFT.Height = myBmp.Height;
-                    imgFFT.Width = myBmp.Width;
-                    imgFFT2.Height = myBmp.Height;
-                    imgFFT2.Width = myBmp.Width;
-                    this.Width = 2 * myBmp.Width;
-                    
+                    if (myBmp.Width < 1000)
+                    {
+                        imgFFT.Height = myBmp.Height;
+                        imgFFT.Width = myBmp.Width;
+                        imgFFT2.Height = myBmp.Height;
+                        imgFFT2.Width = myBmp.Width;
+                        this.Width = 2 * myBmp.Width;
+                    }
+                    else
+                    {
+                        imgFFT.Height = myBmp.Height/2;
+                        imgFFT.Width = myBmp.Width/2;
+                        imgFFT2.Height = myBmp.Height/2;
+                        imgFFT2.Width = myBmp.Width/2;
+                        this.Width = myBmp.Width;
+                    }
 
                     Bitmap tmp = ResizeImage(myBmp, 1024, 1024); //rozmiar do potegi 2
                     Bitmap grayScaleBP = ToGrayscale(tmp); // do skali szarosci oraz 8bpp

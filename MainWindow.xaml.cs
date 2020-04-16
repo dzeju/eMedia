@@ -100,7 +100,7 @@ namespace e_media0_2
             }
             catch (OutOfMemoryException)
             {
-                System.Windows.MessageBox.Show("Pick BMP u fool", "Error");
+                System.Windows.MessageBox.Show("Pick BMP u foo", "Error");
             }
         }
 
@@ -131,7 +131,7 @@ namespace e_media0_2
                 labelImpCol.Content = "Important colors (if 0 none or all equal): " + ReadData(myFile, 50, 53);
             }
             else
-                System.Windows.MessageBox.Show("Pick BMP u fool");
+                System.Windows.MessageBox.Show("Pick BMP u foo");
         }
 
         /// <summary>
