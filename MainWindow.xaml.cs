@@ -209,17 +209,15 @@ namespace e_media0_2
             int row = (3 * ReadData(myFile, 18, 21)) + (3 * ReadData(myFile, 18, 21) % 4);
             int size = row * ReadData(myFile, 22, 25);
 
-            System.Windows.MessageBox.Show(myFile.Length.ToString() + " " + (size + 14 + ReadData(myFile, 14, 17)).ToString());
+            //System.Windows.MessageBox.Show(myFile.Length.ToString() + " " + (size + 14 + ReadData(myFile, 14, 17)).ToString());
 
             if ((size + 14 + ReadData(myFile, 14, 17)) < myFile.Length)
-            {
                 WriteData(myFile, (size + 14 + ReadData(myFile, 14, 17)), myFile.Length, 0);
-            }
+            
             DisplayData(myFile);
+
             if(System.Windows.MessageBox.Show("Done. Data updated. Save the file?", "Save", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-            {
                 SaveTheFile(myFile);
-            }
         }
     }
 }

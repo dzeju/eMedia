@@ -65,13 +65,13 @@ namespace e_media0_2
                     ComplexImage complexImage = ComplexImage.FromBitmap(grayScaleBP); //obraz zespolony
 
                     complexImage.ForwardFourierTransform(); //przeprowadzenie forward fourier transform
-                    Bitmap fourierImage1 = complexImage.ToBitmap();
+                    Bitmap fourierImage1 = complexImage.ToBitmap();//obraz modulu
                     fourierImage1 = ResizeImage(fourierImage1, myBmp.Width, myBmp.Height);
                     imgFFT.Source = BitmapToImageSource(fourierImage1);
 
-                    FrequencyFilter filter = new FrequencyFilter(new IntRange(20, 128));
+                    FrequencyFilter filter = new FrequencyFilter(new IntRange(20, 128));//filtr częstotl
                     filter.Apply(complexImage);
-                    complexImage.BackwardFourierTransform();
+                    complexImage.BackwardFourierTransform();//wsteczna transformacja
                     Bitmap fourierImage2 = complexImage.ToBitmap(); //konwersja obrazu zesp do bitmapy
                     
                     fourierImage2 = ResizeImage(fourierImage2, myBmp.Width, myBmp.Height);
