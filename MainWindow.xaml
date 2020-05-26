@@ -5,13 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:e_media0_2"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" Background="#FF3C3C3C" BorderBrush="#FF3C3C3C" Foreground="#FF3C3C3C" OpacityMask="#FF3C3C3C">
+        Title="MainWindow" Height="550" Width="900" Background="#FF3C3C3C" BorderBrush="#FF3C3C3C" Foreground="#FF3C3C3C" OpacityMask="#FF3C3C3C">
     <Grid Background="#FF3C3C3C">
         <Button x:Name="btnFileOpen" Content="Browse..." HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Top" Width="75" Click="BtnFileOpen_Click" Height="23" Background="#FF3C3C3C" BorderBrush="#FF464646" Foreground="#FFBFBFBF"/>
         <Button x:Name="btnViewImg" Content="View" HorizontalAlignment="Right" Margin="0,38,10,0" VerticalAlignment="Top" Width="75" Click="BtnViewImg_Click" Height="23" Background="#FF3C3C3C" BorderBrush="#FF464646" Foreground="#FFBFBFBF"/>
         <Button x:Name="btnFFT" Content="FFT" HorizontalAlignment="Right" Margin="0,66,10,0" VerticalAlignment="Top" Width="75" Click="BtnFFT_Click" Height="23" Background="#FF3C3C3C" BorderBrush="#FF464646" Foreground="#FFBFBFBF"/>
         <Button x:Name="btnAnonImg" Content="Anon" HorizontalAlignment="Right" Margin="0,94,10,0" VerticalAlignment="Top" Width="75" Click="BtnAnonImg_Click" Height="23" Background="#FF3C3C3C" BorderBrush="#FF464646" Foreground="#FFBFBFBF"/>
-
+        <Button x:Name="btnRSA" Content="RSA" HorizontalAlignment="Right" Margin="0,124,10,0" VerticalAlignment="Top" Width="75" Click="BtnRSA_Click" Height="23" Background="#FF3C3C3C" BorderBrush="#FF464646" Foreground="#FFBFBFBF"/>
+        <Button x:Name="btnRSAmanual" Content="RSA manual" HorizontalAlignment="Right" Margin="0,147,10,0" VerticalAlignment="Top" Width="75" Click="BtnRSAmanual_Click" Height="23" Background="#FF3C3C3C" BorderBrush="#FF464646" Foreground="#FFBFBFBF"/>
+        <Button x:Name="btnRSAmanualdec" Content="RSA man dec" HorizontalAlignment="Right" Margin="0,173,10,0" VerticalAlignment="Top" Width="75" Click="BtnRSAmanualdec_Click" Height="23" Background="#FF3C3C3C" BorderBrush="#FF464646" Foreground="#FFBFBFBF"/>
+        <Button x:Name="btnGenerateKeys" Content="Key Gen" HorizontalAlignment="Right" Margin="0,196,10,0" VerticalAlignment="Top" Width="75" Click="BtnGenerateKeys_Click" Height="23" Background="#FF3C3C3C" BorderBrush="#FF464646" Foreground="#FFBFBFBF"/>
 
         <Label x:Name="TxtFile" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Width="671" Margin="10,10,0,0" Foreground="#FFBFBFBF"/>
 
@@ -32,6 +35,10 @@
         <Label x:Name="labelPxlV" Content="" HorizontalAlignment="Left" Margin="219,277,0,0" VerticalAlignment="Top" Width="200" Foreground="#FFBFBFBF"/>
         <Label x:Name="labelColPal" Content="" HorizontalAlignment="Left" Margin="219,303,0,0" VerticalAlignment="Top" Width="auto" Foreground="#FFBFBFBF"/>
         <Label x:Name="labelImpCol" Content="" HorizontalAlignment="Left" Margin="219,329,0,0" VerticalAlignment="Top" Width="auto" Foreground="#FFBFBFBF"/>
+        <TextBox x:Name="pubKey" HorizontalAlignment="Left" Height="144" Margin="10,365,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="405"/>
+        <TextBox x:Name="privKey" HorizontalAlignment="Left" Height="144" Margin="420,365,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="462"/>
+        <Label Content="Public Key" HorizontalAlignment="Left" Margin="10,334,0,0" VerticalAlignment="Top"/>
+        <Label Content="Private Key" HorizontalAlignment="Left" Margin="420,334,0,0" VerticalAlignment="Top"/>
 
 
 

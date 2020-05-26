@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 //using System.Windows.Controls;
@@ -88,6 +89,76 @@ namespace e_media0_2
             }
         }
 
+        private void BtnRSA_Click(object sender, RoutedEventArgs e)
+        {
+            if (myFile == null)
+            {
+                System.Windows.MessageBox.Show("No file here", "Error");
+            }
+            else
+            {
+                RSAauto rsa = new RSAauto();
+                byte[] myFileEncrypted = null;
+
+                myFileEncrypted = rsa.EncryptMe(myFile);
+                if (myFileEncrypted == null)
+                    System.Windows.MessageBox.Show("null here", "Error");
+                for (int i = 0; i < ReadData(myFile, 10, 13); i++)
+                    myFileEncrypted[i] = myFile[i];
+                
+                SaveTheFile(myFileEncrypted);
+            }
+        }
+
+        private void BtnRSAmanual_Click(object sender, RoutedEventArgs e)
+        {
+            if (myFile == null)
+            {
+                System.Windows.MessageBox.Show("No file here", "Error");
+            }
+            else
+            {
+                byte[] myFileEncrypted = null;
+                RSAmanual rsa = new RSAmanual();
+                /*var thread = new Thread(
+                    () =>
+                    {*/
+                myFileEncrypted = rsa.EncryptMe(myFile, ReadData(myFile, 10, 13), pubKey.Text, privKey.Text);
+                    /*});
+                thread.Start();
+                thread.Join();*/
+                SaveTheFile(myFileEncrypted);
+            }
+        }
+
+        private void BtnRSAmanualdec_Click(object sender, RoutedEventArgs e)
+        {
+            if (myFile == null)
+            {
+                System.Windows.MessageBox.Show("No file here", "Error");
+            }
+            else
+            {
+                byte[] myFileDecrypted = null;
+                RSAmanual rsa = new RSAmanual();
+                try
+                {
+                    myFileDecrypted = rsa.DecryptMe(myFile, ReadData(myFile, 10, 13), pubKey.Text, privKey.Text);
+                    SaveTheFile(myFileDecrypted);
+                }
+                catch(Exception en)
+                {
+                    System.Windows.MessageBox.Show(en.Message);
+                }
+            }
+        }
+
+        private void BtnGenerateKeys_Click(object sender, RoutedEventArgs e)
+        {
+            RSAmanual rsa = new RSAmanual();
+            rsa.GenerateKeys();
+        }
+
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////
         private void MainFunction(string name)
         {
@@ -156,11 +227,11 @@ namespace e_media0_2
             return Convert.ToInt32(data, 16);
         }
 
-        private static void WriteData(byte[] myFile, int begin, int end, byte data)
+        private static void WriteData(byte[] myFilem, int begin, int end, byte data)
         {
             for (int i = begin; i < end; i++)
             {
-                myFile[i] = data;
+                myFilem[i] = data;
             }
         }
 
@@ -219,5 +290,7 @@ namespace e_media0_2
             if(System.Windows.MessageBox.Show("Done. Data updated. Save the file?", "Save", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 SaveTheFile(myFile);
         }
+
+        
     }
 }
